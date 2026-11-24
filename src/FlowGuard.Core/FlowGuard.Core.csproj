@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>FlowGuard.Core</RootNamespace>
+    <!-- Pointer walks over iphlpapi tables + LibraryImport source-generated P/Invoke. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FlowGuard.Core.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      ExcludeAssets="build": the package's own .targets copies x86 + x64 natives into
+      subfolders. We copy exactly the x64 pair into the output root ourselves (below).
+      GeneratePathProperty exposes $(PkgWinDivertSharp) = the package folder.
+    -->
+    <PackageReference Include="WinDivertSharp" Version="1.4.3.2"
+                      GeneratePathProperty="true" ExcludeAssets="build" />
+  </ItemGroup>
+
+  <!--
+    WinDivert.dll loads WinDivert64.sys from its own directory, so both go side by side in the
+    output root. CopyToOutputDirectory flows through ProjectReference, so FlowGuard.UI's bin
+    folder receives them too.
+  -->
+  <ItemGroup>
+    <None Include="$(PkgWinDivertSharp)\build\x64\WinDivert.dll"
+          Link="WinDivert.dll" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="$(PkgWinDivertSharp)\build\x64\WinDivert64.sys"
+          Link="WinDivert64.sys" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+
+</Project>

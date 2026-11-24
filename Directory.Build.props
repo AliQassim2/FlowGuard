@@ -1,0 +1,21 @@
+<Project>
+  <!-- Settings shared by every project in the solution. -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- WinDivert ships only a 64-bit driver (WinDivert64.sys) for x64 Windows. -->
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <!-- Release: PDBs embedded in the assemblies so single-file stack traces keep line numbers. -->
+    <DebugType Condition="'$(Configuration)' == 'Release'">embedded</DebugType>
+
+    <!-- Release metadata (shown in the exe's Properties > Details). Bump Version per release. -->
+    <Version>1.1.0</Version>
+    <Product>FlowGuard</Product>
+    <Company>FlowGuard</Company>
+    <Copyright>Copyright © 2026 FlowGuard contributors</Copyright>
+  </PropertyGroup>
+</Project>

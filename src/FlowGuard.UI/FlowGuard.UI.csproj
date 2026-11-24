@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>FlowGuard.UI</RootNamespace>
+    <AssemblyName>FlowGuard</AssemblyName>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <!-- requireAdministrator: WinDivert needs elevation to load its kernel driver. -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationIcon>Assets\flowguard.ico</ApplicationIcon>
+    <Description>Per-application bandwidth monitor, limiter and QoS</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FlowGuard.Core\FlowGuard.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\flowguard.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="WPF-UI" Version="4.3.0" />
+    <PackageReference Include="WPF-UI.Tray" Version="4.3.0" />
+  </ItemGroup>
+
+  <!--
+    Single-file publish (see Properties/PublishProfiles/win-x64.pubxml): everything goes into
+    FlowGuard.exe except the WinDivert stack, which stays as loose files beside it:
+      * WinDivert64.sys - a kernel driver can't load from inside a bundle; WinDivert.dll looks for
+        it in its own directory, so the DLL must stay unbundled too.
+      * WinDivert.dll / WinDivertSharp.dll - LGPL-3.0 (or GPL-2.0): kept replaceable by the user.
+  -->
+  <Target Name="KeepWinDivertBesideExe" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Condition="'%(Filename)%(Extension)' == 'WinDivert.dll' or '%(Filename)%(Extension)' == 'WinDivert64.sys' or '%(Filename)%(Extension)' == 'WinDivertSharp.dll'">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+      <!-- The package's loose PDB adds nothing for users. -->
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'WinDivertSharp.pdb'" />
+    </ItemGroup>
+  </Target>
+
+</Project>
