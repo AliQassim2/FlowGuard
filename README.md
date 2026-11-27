@@ -102,6 +102,8 @@ the design notes.
 
 ## Licenses
 
-See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). WinDivert and WinDivertSharp are used under
+FlowGuard is released under the [MIT License](LICENSE).
+
+Third-party components: see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). WinDivert and WinDivertSharp are used under
 the LGPL-3.0 and ship as separate, replaceable files; the full license texts are in
 [licenses/](licenses/).
